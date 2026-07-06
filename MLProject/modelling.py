@@ -61,7 +61,11 @@ if not mlflow.get_tracking_uri() or "dagshub.com" not in mlflow.get_tracking_uri
         )
         mlflow.set_tracking_uri(tracking_uri)
 
-mlflow.set_experiment("rice_classification_ci")
+# When invoked via `mlflow run`, the CLI already created the active run under
+# the experiment passed with --experiment-name; calling set_experiment() here
+# would point at a different experiment ID and break run resumption.
+if not os.environ.get("MLFLOW_RUN_ID"):
+    mlflow.set_experiment("rice_classification_ci")
 
 
 def _load():

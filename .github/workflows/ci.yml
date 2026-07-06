@@ -65,14 +65,14 @@ jobs:
       - name: Train via MLflow Project (mlflow run)
         env:
           MLFLOW_TRACKING_URI: ${{ env.MLFLOW_TRACKING_URI }}
+          MLFLOW_TRACKING_USERNAME: ${{ env.DAGSHUB_USERNAME }}
+          MLFLOW_TRACKING_PASSWORD: ${{ env.DAGSHUB_TOKEN }}
           DAGSHUB_USERNAME: ${{ env.DAGSHUB_USERNAME }}
           DAGSHUB_TOKEN: ${{ env.DAGSHUB_TOKEN }}
           DAGSHUB_REPO: ${{ env.DAGSHUB_REPO }}
+          PYTHONIOENCODING: utf-8
         run: |
-          # Use host python env to call MLproject entry; rely on token-in-URL.
-          mlflow run MLProject --env-manager=local -P n_trials=20 || \
-            (echo "mlflow run fallback — direct invocation" && \
-             python MLProject/modelling.py --dataset-id 545 --n-trials 20)
+          mlflow run MLProject --env-manager=local --experiment-name rice_classification_ci -P n_trials=20
 
       - name: Build Docker image from logged MLflow model
         env:
