@@ -1,25 +1,34 @@
 Workflow CI (MLProject + Docker push) — Muhammad-Yusuf
 
 GitHub repositories (PUBLIC):
-  • https://github.com/yusufmuh/msml-rice-classification   (Kriteria 1 + 3)
-  • https://github.com/yusufmuh/Eksperimen-SML-Yusuf      (Kriteria 1 — Notebook)
-  • https://github.com/yusufmuh/Workflow-CI-MSML-Yusuf-v2 (Kriteria 3 — workflow link repo)
+  • https://github.com/yusufmuh/msml-rice-classification   (Kriteria 1 + 2 + 3 + 4, full pipeline)
+  • https://github.com/yusufmuh/Eksperimen-SML-Yusuf      (Kriteria 1 — Notebook + automate_rice.py + preprocessing.yml)
+  • https://github.com/yusufmuh/Workflow-CI-MSML-Yusuf-v2 (Kriteria 3 — MLProject + ci.yml, mirrors the main pipeline)
 
-Workflow files (in yusufmuh/msml-rice-classification):
-  • .github/workflows/preprocessing.yml  — Kriteria 1 (runs on push/PR)
-  • .github/workflows/ci.yml              — Kriteria 3 (mlflow run + build-docker + push Docker Hub)
+Workflow files:
+  In yusufmuh/msml-rice-classification:
+    • .github/workflows/preprocessing.yml  — Kriteria 1 (runs on push)
+    • .github/workflows/ci.yml              — Kriteria 3 (mlflow run + build-docker + push Docker Hub)
+  In yusufmuh/Eksperimen-SML-Yusuf:
+    • .github/workflows/preprocessing.yml  — Kriteria 1 (runs on push, uploads rice_preprocessing artifact)
+  In yusufmuh/Workflow-CI-MSML-Yusuf-v2:
+    • .github/workflows/ci.yml              — Kriteria 3 (mlflow run MLProject + build-docker + push Docker Hub)
 
-Latest successful Actions runs:
-  preprocessing.yml    #6 (success) · #7 (success)
-  ci.yml                #7 (success) · #8 (success) · #9 (success)
+Latest successful Actions runs (all green):
+  msml-rice-classification / preprocessing.yml    run #28790373734 (success)
+  msml-rice-classification / ci.yml               run #28790373635 (success, 12m33s)
+  Eksperimen-SML-Yusuf / preprocessing.yml        run #28790520202 (success)
+  Workflow-CI-MSML-Yusuf-v2 / ci.yml              run #28790756603 (success, 10m36s)
 
 Direct links:
   https://github.com/yusufmuh/msml-rice-classification/actions/workflows/preprocessing.yml
   https://github.com/yusufmuh/msml-rice-classification/actions/workflows/ci.yml
+  https://github.com/yusufmuh/Eksperimen-SML-Yusuf/actions/workflows/preprocessing.yml
+  https://github.com/yusufmuh/Workflow-CI-MSML-Yusuf-v2/actions/workflows/ci.yml
 
 Docker Hub image (PUBLISHED by CI):
   docker.io/yusufbinus/msml-rice-model:latest
-  Size: 605.3 MB · digest: sha256:e38a34d1255deccc36de48bb9de23b1b0dca4083f51046a96fb9cd6c21f08828
+  Size: ~577 MB · last pushed 2026-07-06T12:25:32Z (by Workflow-CI-MSML-Yusuf-v2's ci.yml)
 
 Local serve command (Kriteria 4 verification):
   mlflow models serve -m "models:/rice-model/Production" -p 5005 --no-conda -h 127.0.0.1
