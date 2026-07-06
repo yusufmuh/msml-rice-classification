@@ -1,4 +1,5 @@
 prometheus-3.13.0.windows-amd64/
+grafana-13.1.0/
 .env
 *.pem
 secrets/

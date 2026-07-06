@@ -8,10 +8,10 @@ pre { background:#161b22; border:1px solid #30363d; padding:16px; border-radius:
        white-space:pre-wrap; word-break:break-all; font-size:13px; line-height:1.5 }
 </style></head><body>
 <h1>Prometheus /metrics scrape — MSML inference exporter</h1>
-<p class="sub">Source: http://localhost:8000/metrics · fetched: 2026-07-06 10:40:14 UTC</p>
+<p class="sub">Source: http://localhost:8000/metrics · fetched: 2026-07-06 12:06:17 UTC</p>
 <pre># HELP prediction_total Total predictions served
 # TYPE prediction_total counter
-prediction_total 75.0
+prediction_total 125.0
 # HELP prediction_created Total predictions served
 # TYPE prediction_created gauge
 prediction_created 1.7833297008983896e+09
@@ -24,22 +24,22 @@ prediction_errors_created 1.7833297008983896e+09
 # HELP prediction_latency_seconds Latency of /predict
 # TYPE prediction_latency_seconds histogram
 prediction_latency_seconds_bucket{le="0.005"} 0.0
-prediction_latency_seconds_bucket{le="0.01"} 13.0
-prediction_latency_seconds_bucket{le="0.025"} 13.0
-prediction_latency_seconds_bucket{le="0.05"} 14.0
-prediction_latency_seconds_bucket{le="0.075"} 14.0
-prediction_latency_seconds_bucket{le="0.1"} 14.0
-prediction_latency_seconds_bucket{le="0.25"} 14.0
-prediction_latency_seconds_bucket{le="0.5"} 15.0
-prediction_latency_seconds_bucket{le="0.75"} 15.0
-prediction_latency_seconds_bucket{le="1.0"} 15.0
-prediction_latency_seconds_bucket{le="2.5"} 15.0
-prediction_latency_seconds_bucket{le="5.0"} 15.0
-prediction_latency_seconds_bucket{le="7.5"} 15.0
-prediction_latency_seconds_bucket{le="10.0"} 15.0
-prediction_latency_seconds_bucket{le="+Inf"} 15.0
-prediction_latency_seconds_count 15.0
-prediction_latency_seconds_sum 0.4887194000184536
+prediction_latency_seconds_bucket{le="0.01"} 21.0
+prediction_latency_seconds_bucket{le="0.025"} 22.0
+prediction_latency_seconds_bucket{le="0.05"} 23.0
+prediction_latency_seconds_bucket{le="0.075"} 23.0
+prediction_latency_seconds_bucket{le="0.1"} 24.0
+prediction_latency_seconds_bucket{le="0.25"} 24.0
+prediction_latency_seconds_bucket{le="0.5"} 25.0
+prediction_latency_seconds_bucket{le="0.75"} 25.0
+prediction_latency_seconds_bucket{le="1.0"} 25.0
+prediction_latency_seconds_bucket{le="2.5"} 25.0
+prediction_latency_seconds_bucket{le="5.0"} 25.0
+prediction_latency_seconds_bucket{le="7.5"} 25.0
+prediction_latency_seconds_bucket{le="10.0"} 25.0
+prediction_latency_seconds_bucket{le="+Inf"} 25.0
+prediction_latency_seconds_count 25.0
+prediction_latency_seconds_sum 0.641313300060574
 # HELP prediction_latency_seconds_created Latency of /predict
 # TYPE prediction_latency_seconds_created gauge
 prediction_latency_seconds_created 1.7833297008983896e+09

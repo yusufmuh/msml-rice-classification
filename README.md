@@ -64,5 +64,8 @@ Atau cukup `bash run_all.sh` dari root project.
 - **Repos GitHub: Public** (yusufmuh/msml-rice-classification, Eksperimen-SML-Yusuf, Workflow-CI-MSML-Yusuf-v2).
 - **CI workflows hijau**: preprocessing.yml + ci.yml latest runs `success`.
 - **Docker image published**: `yusufbinus/msml-rice-model:latest` (605 MB).
-- **Grafana dashboard**: file `Monitoring dan Logging/dashboard.json` (5 panel) + `grafana_alerts.json` (3 alert rule) + bukti screenshot tersedia. Re-import via grafana.com SSO jika token cloud baru diterbitkan — file portable siap dipakai.
-- **Model registry**: rice-model v3 (Logistic Regression) di stage Production, accuracy test = **0.9541**.
+- **Grafana dashboard: LOKAL (Grafana OSS, bukan Grafana Cloud)**. Token `GRAFANA_TOKEN` (glc_...) yang dibagikan hanya sebuah *Private Datasource Connect access policy* — cuma valid untuk API `grafana.com` (metadata stack), **bukan** untuk HTTP API stack itu sendiri (`heftywalrus1847.grafana.net/api/*` selalu balas `401 Invalid API key`), dan UI Grafana Cloud mewajibkan login interaktif via akun grafana.com yang tidak tersedia untuk agent. Supaya bukti monitoring **nyata** (bukan render JSON offline), dashboard + alert dijalankan di **Grafana OSS lokal** (`Monitoring dan Logging/grafana-13.1.0/`, dijalankan via `grafana.exe server`, login default `admin/admin`) yang discrape dari Prometheus lokal yang sama. Provisioning otomatis: `Monitoring dan Logging/setup_grafana_local.ps1`.
+  - Dashboard **APC005D6Y0216** — 5 panel real-time (Total Predictions, latency p95, error rate, 2 gauge probabilitas kelas).
+  - Folder alert **APC005D6Y0216** — 3 alert rule (`HighPredictionErrorRate`, `ExporterDown`, `HighPredictionLatencyP95`), semua status **Normal** (hijau) karena exporter + Prometheus lokal aktif.
+  - Screenshot bukti nyata (bukan sintetis): `Monitoring dan Logging/5.bukti monitoring Grafana/` & `6.bukti alerting Grafana/`.
+- **Model registry**: rice-model v3 (Logistic Regression) di stage Production, accuracy test = **0.9541** (terverifikasi ulang via MLflow REST API DagsHub, run_id `2378bbee6212411094e09e79c7a59aca`).
