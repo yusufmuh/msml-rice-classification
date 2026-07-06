@@ -41,7 +41,7 @@ python "Monitoring dan Logging/7.Inference.py"
 
 # 6. Monitoring
 python "Monitoring dan Logging/3.prometheus_exporter.py" &
-docker run -d -p 9090:9090 -v "$(pwd)/Monitoring dan Logging/2.prometheus.yml":/etc/prometheus/prometheus.yml prom/prometheus
+./prometheus-3.13.0.windows-amd64/prometheus.exe --config.file=prometheus.yml
 
 # 7. Capture bukti
 python scripts/capture_evidence.py
@@ -54,7 +54,15 @@ Atau cukup `bash run_all.sh` dari root project.
 
 ## Output
 - Tracking MLflow online: `https://dagshub.com/yusufmuh/msml-rice-classification.mlflow`
-- Docker image: `docker.io/yusufmuh/msml-rice-model:latest`
+- Docker image: `docker.io/yusufbinus/msml-rice-model:latest`
 - Submission: `SMSML_Muhammad-Yusuf.zip`
 
-> ⚠️ Kredensial di `.env` **TIDAK** di-commit. Lihat `.gitignore`.
+> ⚠️ Kredensial di `.env` **TIDAK** di-commit (lihat `.gitignore`).
+
+## Catatan Status
+
+- **Repos GitHub: Public** (yusufmuh/msml-rice-classification, Eksperimen-SML-Yusuf, Workflow-CI-MSML-Yusuf-v2).
+- **CI workflows hijau**: preprocessing.yml + ci.yml latest runs `success`.
+- **Docker image published**: `yusufbinus/msml-rice-model:latest` (605 MB).
+- **Grafana dashboard**: file `Monitoring dan Logging/dashboard.json` (5 panel) + `grafana_alerts.json` (3 alert rule) + bukti screenshot tersedia. Re-import via grafana.com SSO jika token cloud baru diterbitkan — file portable siap dipakai.
+- **Model registry**: rice-model v3 (Logistic Regression) di stage Production, accuracy test = **0.9541**.

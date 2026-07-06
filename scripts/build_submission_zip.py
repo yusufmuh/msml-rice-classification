@@ -62,12 +62,23 @@ def ignore_callback(_, names):
 
 
 # Root-level files
-print("[1/3] root files")
+print("[1/4] root files")
 copy("Eksperimen_SML_Muhammad-Yusuf.txt", "Eksperimen_SML_Muhammad-Yusuf.txt")
 copy("Workflow-CI.txt", "Workflow-CI.txt")
 
+# Notebook (Kriteria 1 deliverable)
+print("[1b/4] notebook")
+nb = DEST / "notebook"
+nb.mkdir(parents=True, exist_ok=True)
+copy("notebook/Eksperimen_SML_Muhammad-Yusuf.ipynb", "notebook/Eksperimen_SML_Muhammad-Yusuf.ipynb")
+
+# Preprocessing script (Kriteria 1 deliverable — automation)
+pp = DEST / "preprocessing"
+pp.mkdir(parents=True, exist_ok=True)
+copy("preprocessing/automate_rice.py", "preprocessing/automate_rice.py")
+
 # Membangun_model (only deliverables, not the heavy raw.csv/joblib)
-print("[2/3] Membangun_model")
+print("[2/4] Membangun_model")
 mb = DEST / "Membangun_model"
 mb.mkdir(parents=True, exist_ok=True)
 copy("Membangun_model/modelling.py", "Membangun_model/modelling.py")
