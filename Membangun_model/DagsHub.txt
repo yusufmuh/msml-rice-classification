@@ -1,0 +1,18 @@
+https://dagshub.com/yusufmuh/msml-rice-classification
+https://dagshub.com/yusufmuh/msml-rice-classification.mlflow
+
+Tracking URI:
+https://yusufmuh:964e7c5a9bca024d62588b0de1bdc30aaaf55891@dagshub.com/yusufmuh/msml-rice-classification.mlflow
+
+Experiments (auto-logged):
+- rice_classification (RF baseline) — accuracy=0.9423, f1=0.9505, roc_auc=0.9861
+- rice_classification_tuning (Optuna sweep over RF/GBM/LR) — best family=LR
+  accuracy=0.9541, promoted model rice-model v3 to stage=Production
+
+Model registry:
+- name: rice-model
+- latest production version: 3 (Logistic Regression, Optuna-tuned)
+
+Run IDs:
+- rf_base: 1845bffe10b44f6ebeca18fe10c71f2c
+- optuna_sweep: 2378bbee6212411094e09e79c7a59aca

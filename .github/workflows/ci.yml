@@ -1,0 +1,124 @@
+name: MSML CI — train + build + push Docker image
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  preprocess:
+    name: 1) Preprocess (automate_rice.py)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Fetch + preprocess
+        env:
+          DATASET_ID: "545"
+          DATASET_NAME: "rice"
+        run: |
+          python scripts/fetch_dataset.py
+          python preprocessing/automate_rice.py
+      - name: Upload preprocessing artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rice_preprocessing
+          path: Membangun_model/rice_preprocessing
+          if-no-files-found: error
+
+  train-track-build:
+    name: 2) Train (MLProject) + build Docker + push to Docker Hub
+    needs: preprocess
+    runs-on: ubuntu-latest
+    env:
+      MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+      DAGSHUB_USERNAME: ${{ secrets.DAGSHUB_USERNAME }}
+      DAGSHUB_TOKEN: ${{ secrets.DAGSHUB_TOKEN }}
+      DAGSHUB_REPO: ${{ secrets.DAGSHUB_REPO }}
+      DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Download preprocessing artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: rice_preprocessing
+          path: Membangun_model/rice_preprocessing
+
+      - name: Train via MLflow Project (mlflow run)
+        run: |
+          mlflow run MLProject -P n_trials=20 --no-conda
+
+      - name: Build Docker image from logged MLflow model
+        env:
+          MLFLOW_TRACKING_USERNAME: ${{ env.DAGSHUB_USERNAME }}
+          MLFLOW_TRACKING_PASSWORD: ${{ env.DAGSHUB_TOKEN }}
+        run: |
+          # Retrieve the latest production model and build a Docker image
+          export IMAGE_NAME="${DOCKERHUB_USERNAME}/msml-rice-model"
+          # Use the last run's model directory
+          LATEST_RUN=$(ls -1t mlruns/0 2>/dev/null | grep -E '^[a-f0-9]{20,}$' | head -1 || true)
+          if [ -z "$LATEST_RUN" ] && [ -d "mlruns" ]; then
+            LATEST_RUN=$(find mlruns -name "meta.yaml" -path "*/runs/*" | sort | tail -1 | xargs dirname | xargs basename)
+          fi
+          # Fallback: download the latest Production model from registry into ./production_model
+          mkdir -p production_model
+          python -c "
+          import mlflow, os, shutil
+          mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
+          os.environ['MLFLOW_TRACKING_USERNAME'] = os.environ['DAGSHUB_USERNAME']
+          os.environ['MLFLOW_TRACKING_PASSWORD'] = os.environ['DAGSHUB_TOKEN']
+          m = mlflow.pyfunc.load_model('models:/rice-model/Production')
+          # Persist underlying sklearn model directly for mlflow build-docker:
+          from mlflow import sklearn as mlflow_sklearn
+          client = mlflow.tracking.MlflowClient()
+          v = client.get_latest_versions('rice-model', stages=['Production'])
+          if v:
+            src = client.download_artifacts(v[0].run_id, 'model')
+            for f in os.listdir(src):
+              shutil.copy(os.path.join(src, f), 'production_model')
+            print('Downloaded Production model ->', os.listdir('production_model'))
+          else:
+            print('No Production model yet — image will be built from the run just trained.')
+          "
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ env.DOCKERHUB_USERNAME }}
+          password: ${{ env.DOCKERHUB_TOKEN }}
+
+      - name: Build & push image (via mlflow models build-docker if model present, else Dockerfile)
+        run: |
+          export IMAGE_NAME="${DOCKERHUB_USERNAME}/msml-rice-model"
+          if compgen -G "production_model/MLmodel" > /dev/null; then
+            mlflow models build-docker --name "${DOCKERHUB_USERNAME}/msml-rice-model:ci-latest" \
+              --model-uri "models:/rice-model/Production" \
+              --env-manager=local || true
+            # If mlflow build-docker succeeded, tag & push
+            docker tag "${DOCKERHUB_USERNAME}/msml-rice-model:ci-latest" "${IMAGE_NAME}:latest"
+            docker push "${IMAGE_NAME}:latest"
+          else
+            docker build -f Dockerfile.mlflow -t "${IMAGE_NAME}:latest" .
+            docker push "${IMAGE_NAME}:latest"
+          fi
+          echo "Pushed ${IMAGE_NAME}:latest"

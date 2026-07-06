@@ -1,0 +1,19 @@
+# Minimal MLflow-serve-compatible Dockerfile (used by CI if `mlflow build-docker` is unavailable).
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Place the trained model where MLflow serve expects it.
+COPY production_model /app/production_model
+
+EXPOSE 5005
+# Quick healthcheck for serving
+HEALTHCHECK --interval=30s --timeout=5s CMD curl -sf http://localhost:5005/ping || exit 1
+
+CMD ["mlflow", "models", "serve", "-m", "/app/production_model", "-p", "5005", "--no-conda", "-h", "0.0.0.0"]

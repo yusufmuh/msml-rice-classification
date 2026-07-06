@@ -1,0 +1,10 @@
+name: msml-rice
+
+conda_env: python_env.yaml
+
+entry_points:
+  main:
+    parameters:
+      dataset_id: {type: int, default: 545}
+      n_trials:   {type: int, default: 40}
+    command: "python modelling.py --dataset-id {dataset_id} --n-trials {n_trials}"

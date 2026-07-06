@@ -1,0 +1,54 @@
+name: MSML Preprocessing — Kriteria 1
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  preprocess:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Fetch rice dataset (UCI id=545)
+        env:
+          DATASET_ID: "545"
+          DATASET_NAME: "rice"
+        run: python scripts/fetch_dataset.py
+
+      - name: Run automated preprocessing
+        env:
+          DATASET_ID: "545"
+          DATASET_NAME: "rice"
+        run: python preprocessing/automate_rice.py
+
+      - name: Upload preprocessing artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: rice_preprocessing
+          path: Membangun_model/rice_preprocessing
+          if-no-files-found: error
+
+      - name: Run notebook EDA (papermill)
+        run: |
+          pip install papermill
+          mkdir -p notebook_out
+          papermill notebook/Eksperimen_SML_Muhammad-Yusuf.ipynb notebook_out/eda.ipynb || true
+          jupyter nbconvert --to html notebook_out/eda.ipynb --output notebook_out/eda.html || true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: notebook_executed
+          path: notebook_out
+          if-no-files-found: ignore
