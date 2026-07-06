@@ -63,8 +63,11 @@ jobs:
           path: Membangun_model/rice_preprocessing
 
       - name: Train via MLflow Project (mlflow run)
+        env:
+          MLFLOW_ALLOW_FILE_STORE: "true"
         run: |
-          mlflow run MLProject -P n_trials=20 --no-conda
+          # mlflow>=2.19 uses python_env.yaml; --env-manager=local uses the host env
+          mlflow run MLProject -P n_trials=20 --env-manager=local
 
       - name: Build Docker image from logged MLflow model
         env:

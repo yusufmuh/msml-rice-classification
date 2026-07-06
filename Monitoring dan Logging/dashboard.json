@@ -1,0 +1,50 @@
+{
+  "dashboard": {
+    "title": "APC005D6Y0216",
+    "uid": "msml-rice-dashboard",
+    "schemaVersion": 39,
+    "version": 1,
+    "editable": true,
+    "tags": ["msml", "rice", "mlops"],
+    "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Total Predictions",
+        "targets": [{"expr": "prediction_total", "refId": "A"}],
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "type": "graph",
+        "title": "Prediction latency p95",
+        "targets": [
+          {"expr": "histogram_quantile(0.95, sum(rate(prediction_latency_seconds_bucket[5m])) by (le))", "refId": "A"}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "type": "graph",
+        "title": "Prediction errors rate",
+        "targets": [{"expr": "rate(prediction_errors_total[5m])", "refId": "A"}],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "type": "gauge",
+        "title": "Cammeo probability (last)",
+        "targets": [{"expr": "model_probability_cammeo", "refId": "A"}],
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 16}
+      },
+      {
+        "id": 5,
+        "type": "gauge",
+        "title": "Osmancik probability (last)",
+        "targets": [{"expr": "model_probability_osmancik", "refId": "A"}],
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 16}
+      }
+    ]
+  },
+  "overwrite": true
+}

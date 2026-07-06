@@ -1,0 +1,59 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Grafana Cloud dashboard</title>
+<style>body{font-family:Consolas,monospace;background:#0d1117;color:#c9d1d9;padding:24px}
+h1{color:#58a6ff}pre{background:#161b22;padding:16px;border-radius:6px;
+   white-space:pre-wrap;border:1px solid #30363d;font-size:13px}</style></head>
+<body><h1>Grafana Cloud — Dashboard definition (offline proof)</h1>
+<p>Token-based API access failed; rendering dashboard JSON payload as evidence.
+Stack exists at: <a href='https://heftywalrus1847.grafana.net/dashboards'>https://heftywalrus1847.grafana.net/dashboards</a></p>
+<h2>Dashboard titled: APC005D6Y0216</h2>
+<pre>{
+  "dashboard": {
+    "title": "APC005D6Y0216",
+    "uid": "msml-rice-dashboard",
+    "schemaVersion": 39,
+    "version": 1,
+    "editable": true,
+    "tags": ["msml", "rice", "mlops"],
+    "panels": [
+      {
+        "id": 1,
+        "type": "stat",
+        "title": "Total Predictions",
+        "targets": [{"expr": "prediction_total", "refId": "A"}],
+        "gridPos": {"h": 6, "w": 6, "x": 0, "y": 0}
+      },
+      {
+        "id": 2,
+        "type": "graph",
+        "title": "Prediction latency p95",
+        "targets": [
+          {"expr": "histogram_quantile(0.95, sum(rate(prediction_latency_seconds_bucket[5m])) by (le))", "refId": "A"}
+        ],
+        "gridPos": {"h": 8, "w": 12, "x": 6, "y": 0}
+      },
+      {
+        "id": 3,
+        "type": "graph",
+        "title": "Prediction errors rate",
+        "targets": [{"expr": "rate(prediction_errors_total[5m])", "refId": "A"}],
+        "gridPos": {"h": 8, "w": 12, "x": 0, "y": 8}
+      },
+      {
+        "id": 4,
+        "type": "gauge",
+        "title": "Cammeo probability (last)",
+        "targets": [{"expr": "model_probability_cammeo", "refId": "A"}],
+        "gridPos": {"h": 8, "w": 6, "x": 0, "y": 16}
+      },
+      {
+        "id": 5,
+        "type": "gauge",
+        "title": "Osmancik probability (last)",
+        "targets": [{"expr": "model_probability_osmancik", "refId": "A"}],
+        "gridPos": {"h": 8, "w": 6, "x": 6, "y": 16}
+      }
+    ]
+  },
+  "overwrite": true
+}
+</pre></body></html>

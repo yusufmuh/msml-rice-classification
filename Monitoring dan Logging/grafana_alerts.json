@@ -1,0 +1,88 @@
+{
+  "name": "MSML Rice Alerts",
+  "rules": [
+    {
+      "grafanaManaged": false,
+      "uid": "msml-high-error-rate",
+      "title": "HighPredictionErrorRate",
+      "condition": "A",
+      "data": [
+        {
+          "refId": "A",
+          "queryType": "",
+          "relativeTimeRange": {"from": 600, "to": 0},
+          "datasourceUid": "PBFA97CFB590B2093",
+          "model": {
+            "expr": "rate(prediction_errors_total[5m])",
+            "intervalMs": 1000,
+            "maxDataPoints": 43200,
+            "refId": "A"
+          }
+        }
+      ],
+      "noDataState": "NoData",
+      "execErrState": "Error",
+      "for": 120000,
+      "annotations": {
+        "summary": "Tingkat error prediksi di atas 10% (rate per 5 menit)",
+        "description": "Exporter MSML mengalami error rate > 0.1 dalam 5 menit terakhir."
+      },
+      "labels": {"severity": "warning"}
+    },
+    {
+      "grafanaManaged": false,
+      "uid": "msml-exporter-down",
+      "title": "ExporterDown",
+      "condition": "A",
+      "data": [
+        {
+          "refId": "A",
+          "queryType": "",
+          "relativeTimeRange": {"from": 600, "to": 0},
+          "datasourceUid": "PBFA97CFB590B2093",
+          "model": {
+            "expr": "up{job=\"msml-exporter\"} == 0",
+            "intervalMs": 1000,
+            "maxDataPoints": 43200,
+            "refId": "A"
+          }
+        }
+      ],
+      "noDataState": "NoData",
+      "execErrState": "Error",
+      "for": 60000,
+      "annotations": {
+        "summary": "MSML inference exporter tidak aktif",
+        "description": "Tidak ada scrape yang berhasil dari exporter dalam 1 menit."
+      },
+      "labels": {"severity": "critical"}
+    },
+    {
+      "grafanaManaged": false,
+      "uid": "msml-latency-p95",
+      "title": "HighPredictionLatencyP95",
+      "condition": "A",
+      "data": [
+        {
+          "refId": "A",
+          "queryType": "",
+          "relativeTimeRange": {"from": 600, "to": 0},
+          "datasourceUid": "PBFA97CFB590B2093",
+          "model": {
+            "expr": "histogram_quantile(0.95, sum(rate(prediction_latency_seconds_bucket[5m])) by (le)) > 1.0",
+            "intervalMs": 1000,
+            "maxDataPoints": 43200,
+            "refId": "A"
+          }
+        }
+      ],
+      "noDataState": "NoData",
+      "execErrState": "Error",
+      "for": 120000,
+      "annotations": {
+        "summary": "Latensi p95 prediksi > 1.0 detik"
+      },
+      "labels": {"severity": "warning"}
+    }
+  ]
+}

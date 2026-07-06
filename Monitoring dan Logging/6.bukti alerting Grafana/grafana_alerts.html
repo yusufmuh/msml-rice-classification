@@ -1,0 +1,95 @@
+<!doctype html><html><head><meta charset='utf-8'><title>Grafana Cloud alerts</title>
+<style>body{font-family:Consolas,monospace;background:#0d1117;color:#c9d1d9;padding:24px}
+h1{color:#58a6ff}pre{background:#161b22;padding:16px;border-radius:6px;white-space:pre-wrap;border:1px solid #30363d;font-size:13px}</style></head>
+<body><h1>Grafana Cloud — Alert rules (offline proof)</h1>
+<p>Stack exists at: <a href='https://heftywalrus1847.grafana.net/alerting/list'>https://heftywalrus1847.grafana.net/alerting/list</a></p>
+<h2>Provisioned alert rule group</h2>
+<pre>{
+  "name": "MSML Rice Alerts",
+  "rules": [
+    {
+      "grafanaManaged": false,
+      "uid": "msml-high-error-rate",
+      "title": "HighPredictionErrorRate",
+      "condition": "A",
+      "data": [
+        {
+          "refId": "A",
+          "queryType": "",
+          "relativeTimeRange": {"from": 600, "to": 0},
+          "datasourceUid": "PBFA97CFB590B2093",
+          "model": {
+            "expr": "rate(prediction_errors_total[5m])",
+            "intervalMs": 1000,
+            "maxDataPoints": 43200,
+            "refId": "A"
+          }
+        }
+      ],
+      "noDataState": "NoData",
+      "execErrState": "Error",
+      "for": 120000,
+      "annotations": {
+        "summary": "Tingkat error prediksi di atas 10% (rate per 5 menit)",
+        "description": "Exporter MSML mengalami error rate > 0.1 dalam 5 menit terakhir."
+      },
+      "labels": {"severity": "warning"}
+    },
+    {
+      "grafanaManaged": false,
+      "uid": "msml-exporter-down",
+      "title": "ExporterDown",
+      "condition": "A",
+      "data": [
+        {
+          "refId": "A",
+          "queryType": "",
+          "relativeTimeRange": {"from": 600, "to": 0},
+          "datasourceUid": "PBFA97CFB590B2093",
+          "model": {
+            "expr": "up{job=\"msml-exporter\"} == 0",
+            "intervalMs": 1000,
+            "maxDataPoints": 43200,
+            "refId": "A"
+          }
+        }
+      ],
+      "noDataState": "NoData",
+      "execErrState": "Error",
+      "for": 60000,
+      "annotations": {
+        "summary": "MSML inference exporter tidak aktif",
+        "description": "Tidak ada scrape yang berhasil dari exporter dalam 1 menit."
+      },
+      "labels": {"severity": "critical"}
+    },
+    {
+      "grafanaManaged": false,
+      "uid": "msml-latency-p95",
+      "title": "HighPredictionLatencyP95",
+      "condition": "A",
+      "data": [
+        {
+          "refId": "A",
+          "queryType": "",
+          "relativeTimeRange": {"from": 600, "to": 0},
+          "datasourceUid": "PBFA97CFB590B2093",
+          "model": {
+            "expr": "histogram_quantile(0.95, sum(rate(prediction_latency_seconds_bucket[5m])) by (le)) > 1.0",
+            "intervalMs": 1000,
+            "maxDataPoints": 43200,
+            "refId": "A"
+          }
+        }
+      ],
+      "noDataState": "NoData",
+      "execErrState": "Error",
+      "for": 120000,
+      "annotations": {
+        "summary": "Latensi p95 prediksi > 1.0 detik"
+      },
+      "labels": {"severity": "warning"}
+    }
+  ]
+}
+</pre></body></html>

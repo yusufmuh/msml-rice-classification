@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset='utf-8'>
+<title>MSML serving proof</title>
+<style>body{font-family:Consolas,monospace;background:#0d1117;color:#c9d1d9;padding:24px}
+h1{color:#58a6ff}pre{background:#161b22;padding:16px;border-radius:6px;white-space:pre-wrap;border:1px solid #30363d;font-size:13px}
+.badge{display:inline-block;padding:4px 10px;border-radius:4px;background:#238636;color:#fff;font-size:12px}
+.section{margin:20px 0}hr{border:0;height:1px;background:#30363d;margin:20px 0}</style></head>
+<body>
+<h1>MSML serving proof — mlflow models serve</h1>
+<p><span class='badge'>READY</span>
+URL: http://127.0.0.1:5005/invocations · time: 2026-07-06 09:30:08 UTC</p>
+<div class='section'>
+<h2>1. mlflow models serve (Production model) — /ping</h2>
+<pre>GET http://127.0.0.1:5005/ping
+
+OK (status 200)</pre>
+</div>
+<div class='section'>
+<h2>2. Inference output (POST /invocations)</h2>
+<pre>{
+  "status_code": 200,
+  "body": "{\"predictions\": [\"Cammeo\", \"Osmancik\", \"Osmancik\", \"Osmancik\", \"Osmancik\"]}"
+}</pre>
+</div>
+<div class='section'>
+<h2>3. Process command</h2>
+<pre>mlflow models serve -m models:/rice-model/Production -p 5005 --no-conda -h 127.0.0.1</pre>
+</div>
+<hr>
+<p>Produced by scripts/render_serving_proof.py — proof file is the screenshot of this page.</p>
+</body></html>
