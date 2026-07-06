@@ -1,0 +1,37 @@
+groups:
+  - name: msml-rice-alerts
+    interval: 30s
+    rules:
+      - alert: HighPredictionErrorRate
+        expr: rate(prediction_errors_total[5m]) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Tingkat error prediksi tinggi (>10%)"
+          description: "Exporter melaporkan banyak error prediksi dalam 5 menit terakhir."
+
+      - alert: ExporterDown
+        expr: up{job="msml-exporter"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MSML inference exporter tidak aktif"
+          description: "Tidak ada scrape yang berhasil dari exporter dalam 1 menit."
+
+      - alert: HighPredictionLatencyP95
+        expr: histogram_quantile(0.95, sum(rate(prediction_latency_seconds_bucket[5m])) by (le)) > 1.0
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latensi prediksi p95 > 1.0 detik"
+
+      - alert: InferenceTrafficDrop
+        expr: rate(prediction_total[5m]) == 0
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "Tidak ada traffic inference dalam 5 menit terakhir"
