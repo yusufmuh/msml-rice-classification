@@ -9,16 +9,21 @@ import sys
 from pathlib import Path
 
 import joblib
+import matplotlib
 import mlflow
 import mlflow.sklearn
 import numpy as np
 import optuna
 import pandas as pd
+
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 from dotenv import load_dotenv
 from sklearn.ensemble import GradientBoostingClassifier, RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
+    confusion_matrix,
     f1_score,
     precision_score,
     recall_score,
@@ -137,6 +142,43 @@ def main() -> int:
         mlflow.set_tag("best_family", family)
 
         mlflow.sklearn.log_model(model, artifact_path="model")
+
+        # Manual logging (advance): 2+ artifacts beyond what autolog would produce.
+        history_path = ROOT / "optuna_optimization_history.png"
+        fig, ax = plt.subplots(figsize=(8, 5))
+        trial_values = [t.value for t in study.trials if t.value is not None]
+        best_so_far = np.maximum.accumulate(trial_values)
+        ax.plot(trial_values, "o", alpha=0.4, label="trial CV accuracy")
+        ax.plot(best_so_far, color="red", linewidth=2, label="best so far")
+        ax.set_xlabel("Trial")
+        ax.set_ylabel("CV accuracy")
+        ax.set_title(f"Optuna optimization history (best={best.value:.4f})")
+        ax.legend()
+        fig.tight_layout()
+        fig.savefig(history_path, dpi=110)
+        plt.close(fig)
+        mlflow.log_artifact(str(history_path))
+
+        cm_path = ROOT / "confusion_matrix_tuned.png"
+        cm = confusion_matrix(y_test, y_pred, labels=classes)
+        fig, ax = plt.subplots(figsize=(5, 4))
+        im = ax.imshow(cm, cmap="Blues")
+        ax.set_xticks(range(len(classes)))
+        ax.set_yticks(range(len(classes)))
+        ax.set_xticklabels(classes)
+        ax.set_yticklabels(classes)
+        for i in range(cm.shape[0]):
+            for j in range(cm.shape[1]):
+                ax.text(j, i, cm[i, j], ha="center", va="center",
+                        color="white" if cm[i, j] > cm.max() / 2 else "black")
+        ax.set_xlabel("Predicted")
+        ax.set_ylabel("Actual")
+        ax.set_title(f"Confusion Matrix ({family})")
+        fig.colorbar(im)
+        fig.tight_layout()
+        fig.savefig(cm_path, dpi=110)
+        plt.close(fig)
+        mlflow.log_artifact(str(cm_path))
 
         if acc >= 0.92:
             try:

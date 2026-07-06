@@ -17,3 +17,13 @@ Model registry:
 Screenshots (saved to Membangun_model/):
 - screenshoot_dashboard.jpg   — MLflow experiments (auto-logged runs)
 - screenshoot_artifak.jpg     — MLflow run artifacts (confusion_matrix.png, feature_importance.png)
+
+Bukti tambahan lengkap (local + online) ada di Membangun_model/mlflow_tracking_evidence/
+(lihat README.md di folder tersebut untuk penjelasan tiap file):
+- mlflow_tracking_evidence/local/            -> MLflow Tracking UI lokal (127.0.0.1:5000), Basic (autolog)
+                                                 & Skilled (tuning + manual logging), termasuk Model Registry
+                                                 Production stage.
+- mlflow_tracking_evidence/dagshub_online/   -> MLflow Tracking UI online (dagshub.com, server v3.5.1),
+                                                 Advance: manual logging + 2 artefak tambahan
+                                                 (confusion_matrix_tuned.png, optuna_optimization_history.png),
+                                                 model registry rice-model hingga v16.

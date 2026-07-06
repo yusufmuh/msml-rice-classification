@@ -14,11 +14,11 @@ Workflow files:
   In yusufmuh/Workflow-CI-MSML-Yusuf-v2:
     • .github/workflows/ci.yml              — Kriteria 3 (mlflow run MLProject + build-docker + push Docker Hub)
 
-Latest successful Actions runs (all green):
-  msml-rice-classification / preprocessing.yml    run #28790373734 (success)
-  msml-rice-classification / ci.yml               run #28790373635 (success, 12m33s)
-  Eksperimen-SML-Yusuf / preprocessing.yml        run #28790520202 (success)
-  Workflow-CI-MSML-Yusuf-v2 / ci.yml              run #28790756603 (success, 10m36s)
+Latest successful Actions runs (all green, using `mlflow run MLProject --env-manager=local`):
+  msml-rice-classification / preprocessing.yml    run #28799830978 (success)
+  msml-rice-classification / ci.yml               run #28799830779 (success, 5m10s)
+  Eksperimen-SML-Yusuf / preprocessing.yml        run #28800646639 (success)
+  Workflow-CI-MSML-Yusuf-v2 / ci.yml              run #28800143008 (success, 3m47s)
 
 Direct links:
   https://github.com/yusufmuh/msml-rice-classification/actions/workflows/preprocessing.yml
