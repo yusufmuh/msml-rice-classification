@@ -1,16 +1,22 @@
 Workflow CI (MLProject + Docker push):
 
-GitHub repository (public):
+GitHub repository (Public):
   https://github.com/yusufmuh/msml-rice-classification
 
 Workflows:
-  Preprocessing (Kriteria 1):
+  Preprocessing (Kriteria 1) — runs on push/PR — SUCCESS:
     https://github.com/yusufmuh/msml-rice-classification/actions/workflows/preprocessing.yml
-  CI (Kriteria 3: mlflow run + Docker push):
+
+  CI (Kriteria 3: mlflow run + build-docker + push Docker Hub) — SUCCESS:
     https://github.com/yusufmuh/msml-rice-classification/actions/workflows/ci.yml
 
-Docker image (akan tersedia setelah CI hijau):
+Docker image (PUBLISHED by CI):
   docker.io/yusufbinus/msml-rice-model:latest
+  Size: 605 MB · architecture: amd64 · OS: linux
 
-Local serve (manual):
+Successful CI runs:
+  preprocessing.yml — #28781025863 (first success) / #28782288298 (rerun)
+  ci.yml            — #28782288298 (last success: Train + Docker push)
+
+Local serve (jika dijalankan manual):
   mlflow models serve -m "models:/rice-model/Production" -p 5005 --no-conda -h 127.0.0.1
