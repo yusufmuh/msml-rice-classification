@@ -1,0 +1,16 @@
+Workflow CI (MLProject + Docker push):
+
+GitHub repository (public):
+  https://github.com/yusufmuh/msml-rice-classification
+
+Workflows:
+  Preprocessing (Kriteria 1):
+    https://github.com/yusufmuh/msml-rice-classification/actions/workflows/preprocessing.yml
+  CI (Kriteria 3: mlflow run + Docker push):
+    https://github.com/yusufmuh/msml-rice-classification/actions/workflows/ci.yml
+
+Docker image (akan tersedia setelah CI hijau):
+  docker.io/yusufbinus/msml-rice-model:latest
+
+Local serve (manual):
+  mlflow models serve -m "models:/rice-model/Production" -p 5005 --no-conda -h 127.0.0.1
