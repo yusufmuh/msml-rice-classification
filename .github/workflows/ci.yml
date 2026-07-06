@@ -43,6 +43,7 @@ jobs:
       DAGSHUB_REPO: ${{ secrets.DAGSHUB_REPO }}
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+      REPO_OWNER: ${{ secrets.REPO_OWNER }}
     steps:
       - uses: actions/checkout@v4
 
