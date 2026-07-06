@@ -24,18 +24,42 @@ from sklearn.model_selection import StratifiedKFold, cross_val_score
 load_dotenv()
 
 ROOT = Path(__file__).resolve().parent
-DATA_DIR = ROOT / "Membangun_model" / "rice_preprocessing"
+# Search for the preprocessed data — try a few likely locations.
+_candidates = [
+    ROOT / "Membangun_model" / "rice_preprocessing",
+    ROOT.parent / "Membangun_model" / "rice_preprocessing",
+]
+DATA_DIR = next((c for c in _candidates if (c / "train.csv").exists()), _candidates[1])
 MODEL_NAME = "rice-model"
 
 _dagshub_user = os.getenv("DAGSHUB_USERNAME")
 _dagshub_token = os.getenv("DAGSHUB_TOKEN")
 _dagshub_repo = os.getenv("DAGSHUB_REPO")
-if _dagshub_user and _dagshub_token and _dagshub_repo:
-    tracking_uri = (
-        f"https://{_dagshub_user}:{_dagshub_token}"
-        f"@dagshub.com/{_dagshub_user}/{_dagshub_repo}.mlflow"
-    )
+
+# CI env: MLFLOW_TRACKING_URI is exported as plain https://… (no creds in URL);
+# MLFLOW_TRACKING_USERNAME / MLFLOW_TRACKING_PASSWORD carry the basic-auth creds.
+_tracking_uri_env = os.getenv("MLFLOW_TRACKING_URI")
+if _tracking_uri_env:
+    # Re-inject credentials into URL so the remote tracking backend accepts them.
+    if _dagshub_user and _dagshub_token and "://" in _tracking_uri_env and "@" not in _tracking_uri_env:
+        if _tracking_uri_env.startswith("https://"):
+            tracking_uri = (
+                f"https://{_dagshub_user}:{_dagshub_token}@{_tracking_uri_env[len('https://'):]}"
+            )
+        else:
+            tracking_uri = _tracking_uri_env
+    else:
+        tracking_uri = _tracking_uri_env
     mlflow.set_tracking_uri(tracking_uri)
+
+# Local fallback for non-CI runs that pass token only via env (not URL).
+if not mlflow.get_tracking_uri() or "dagshub.com" not in mlflow.get_tracking_uri():
+    if _dagshub_user and _dagshub_token and _dagshub_repo:
+        tracking_uri = (
+            f"https://{_dagshub_user}:{_dagshub_token}"
+            f"@dagshub.com/{_dagshub_user}/{_dagshub_repo}.mlflow"
+        )
+        mlflow.set_tracking_uri(tracking_uri)
 
 mlflow.set_experiment("rice_classification_ci")
 

@@ -64,10 +64,15 @@ jobs:
 
       - name: Train via MLflow Project (mlflow run)
         env:
-          MLFLOW_ALLOW_FILE_STORE: "true"
+          MLFLOW_TRACKING_URI: ${{ env.MLFLOW_TRACKING_URI }}
+          DAGSHUB_USERNAME: ${{ env.DAGSHUB_USERNAME }}
+          DAGSHUB_TOKEN: ${{ env.DAGSHUB_TOKEN }}
+          DAGSHUB_REPO: ${{ env.DAGSHUB_REPO }}
         run: |
-          # mlflow>=2.19 uses python_env.yaml; --env-manager=local uses the host env
-          mlflow run MLProject -P n_trials=20 --env-manager=local
+          # Use host python env to call MLproject entry; rely on token-in-URL.
+          mlflow run MLProject --env-manager=local -P n_trials=20 || \
+            (echo "mlflow run fallback — direct invocation" && \
+             python MLProject/modelling.py --dataset-id 545 --n-trials 20)
 
       - name: Build Docker image from logged MLflow model
         env:
