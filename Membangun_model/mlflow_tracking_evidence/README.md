@@ -3,6 +3,15 @@
 Folder ini berisi bukti tangkapan layar MLflow Tracking UI untuk setiap level kriteria 2,
 sebagai pelengkap `screenshoot_dashboard.jpg` dan `screenshoot_artifak.jpg` di folder induk.
 
+> **Catatan revisi (perbaikan Basic level):** `modelling.py` sekarang **hardcode**
+> `mlflow.set_tracking_uri(f"file:{ROOT/'mlruns'}")` — tanpa `load_dotenv()`, tanpa
+> pengecekan `DAGSHUB_*`, dan tanpa logika kondisional apa pun ke server cloud. Skrip ini
+> **selalu** menulis ke folder `mlruns` lokal, apa pun isi environment variable-nya.
+> Integrasi DagsHub hanya ada di `modelling_tuning.py` (Skilled/Advance).
+> `screenshoot_dashboard.jpg` dan `screenshoot_artifak.jpg` di folder induk sudah diganti
+> dengan tangkapan layar terbaru yang menampilkan address bar browser `127.0.0.1:5000`
+> dan `Path: file:C:/Users/.../Membangun_model/mlruns/...` sebagai bukti tak ambigu.
+
 ## `local/` — Basic & Skilled (MLflow Tracking UI lokal, `http://127.0.0.1:5000`)
 
 | File | Menunjukkan |

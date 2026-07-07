@@ -1,29 +1,57 @@
+PENTING — Pemisahan tracking Basic (lokal) vs Advance (DagsHub online)
+=======================================================================
+modelling.py         -> HARDCODED 100% lokal (file:./mlruns). TIDAK ADA logika apa pun
+                         yang mengarah ke DagsHub/cloud manapun. mlflow.set_tracking_uri()
+                         di-hardcode ke folder lokal, tanpa pengecekan environment variable.
+                         Ini memenuhi ketentuan Kriteria 2 tingkat Basic.
+
+modelling_tuning.py  -> Boleh terhubung ke DagsHub (integrasi pihak ketiga hanya
+                         diperbolehkan di file ini) untuk memenuhi Kriteria 2 tingkat Advance
+                         (tracking online + manual logging + artefak tambahan).
+
+DagsHub repo (dipakai HANYA oleh modelling_tuning.py):
 https://dagshub.com/yusufmuh/msml-rice-classification
 https://dagshub.com/yusufmuh/msml-rice-classification.mlflow
 
-Tracking URI (token removed — read from .env in scripts; never commit secrets):
+Tracking URI (token dibaca dari .env di modelling_tuning.py; tidak pernah di-commit):
 https://<DAGSHUB_USERNAME>:<DAGSHUB_TOKEN>@dagshub.com/<DAGSHUB_USERNAME>/<DAGSHUB_REPO>.mlflow
 
-Experiments (auto-logged):
-- rice_classification        (rf_base, RF baseline)      — accuracy=0.9423, f1=0.9505, roc_auc=0.9861
-- rice_classification_tuning (optuna_sweep, RF/GBM/LR)    — best=LogisticRegression
-                                                              accuracy=0.9541, promoted to Production
-- rice_classification_ci     (CI_train)                   — additional CI run when CI workflow is green
+Experiments:
+- rice_classification        -> LOKAL SAJA (dari modelling.py). Basic level.
+                                 accuracy=0.9423, f1=0.9505, roc_auc=0.9861
+                                 Tracking URI: file:C:/Users/Yusuf/coding/MSLM - SUBMISSION/
+                                 SMSML_Yusuf/Membangun_model/mlruns  (lihat screenshoot_dashboard.jpg
+                                 & screenshoot_artifak.jpg — Path artefak berupa "file:..." bukan URL cloud)
+- rice_classification_tuning -> Lokal DAN DagsHub online (dari modelling_tuning.py). Skilled/Advance.
+                                 best=LogisticRegression, accuracy=0.9541, promoted to Production
+- rice_classification_ci     -> dijalankan oleh CI/CD (MLProject/modelling.py, script terpisah
+                                 khusus untuk Kriteria 3), boleh pakai tracking online agar artefak
+                                 CI tersimpan di repo.
 
 Model registry:
 - name: rice-model
-- latest production version: v3 (Logistic Regression, Optuna-tuned)
+- v1  -> hasil modelling.py LOKAL (basic, RandomForest)
+- versi lain (v2, v3, ...) -> hasil modelling_tuning.py (lokal & DagsHub)
 
-Screenshots (saved to Membangun_model/):
-- screenshoot_dashboard.jpg   — MLflow experiments (auto-logged runs)
-- screenshoot_artifak.jpg     — MLflow run artifacts (confusion_matrix.png, feature_importance.png)
+Screenshots (disimpan di Membangun_model/, untuk Kriteria 2 Basic — modelling.py):
+- screenshoot_dashboard.jpg   -> MLflow Tracking UI di http://127.0.0.1:5000 (address bar browser
+                                 terlihat jelas), experiment "rice_classification", run "rf_base".
+- screenshoot_artifak.jpg     -> Detail artefak run tsb. menampilkan "Path: file:C:/Users/Yusuf/
+                                 coding/MSLM - SUBMISSION/SMSML_Yusuf/Membangun_model/mlruns/..."
+                                 yang membuktikan penyimpanan 100% lokal, bukan cloud.
 
 Bukti tambahan lengkap (local + online) ada di Membangun_model/mlflow_tracking_evidence/
 (lihat README.md di folder tersebut untuk penjelasan tiap file):
-- mlflow_tracking_evidence/local/            -> MLflow Tracking UI lokal (127.0.0.1:5000), Basic (autolog)
-                                                 & Skilled (tuning + manual logging), termasuk Model Registry
-                                                 Production stage.
+- mlflow_tracking_evidence/local/            -> MLflow Tracking UI lokal (127.0.0.1:5000):
+                                                 * Basic (modelling.py, autolog, experiment rice_classification)
+                                                 * Skilled (modelling_tuning.py dijalankan lokal, manual logging)
+                                                 termasuk Model Registry Production stage.
 - mlflow_tracking_evidence/dagshub_online/   -> MLflow Tracking UI online (dagshub.com, server v3.5.1),
-                                                 Advance: manual logging + 2 artefak tambahan
-                                                 (confusion_matrix_tuned.png, optuna_optimization_history.png),
-                                                 model registry rice-model hingga v16.
+                                                 HANYA dari modelling_tuning.py — Advance: manual logging
+                                                 + 2 artefak tambahan (confusion_matrix_tuned.png,
+                                                 optuna_optimization_history.png), model registry
+                                                 rice-model hingga v16.
+- mlflow_tracking_evidence/OLD_screenshoot_*_was_dagshub.jpg -> arsip screenshot versi sebelumnya
+                                                 (revisi submission) yang keliru menampilkan hasil
+                                                 DagsHub untuk berkas modelling.py; disimpan sebagai
+                                                 jejak audit, SUDAH DIGANTI oleh screenshot lokal di atas.

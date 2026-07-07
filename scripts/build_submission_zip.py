@@ -90,6 +90,7 @@ copy("Membangun_model/screenshoot_artifak.jpg", "Membangun_model/screenshoot_art
 copy("Membangun_model/requirements.txt", "Membangun_model/requirements.txt")
 copy("Membangun_model/DagsHub.txt", "Membangun_model/DagsHub.txt")
 copy("Membangun_model/rice_preprocessing", "Membangun_model/rice_preprocessing")
+copy("Membangun_model/mlflow_tracking_evidence", "Membangun_model/mlflow_tracking_evidence")
 
 # Monitoring dan Logging
 print("[3/3] Monitoring dan Logging")
