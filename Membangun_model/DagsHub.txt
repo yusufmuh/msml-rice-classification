@@ -51,7 +51,3 @@ Bukti tambahan lengkap (local + online) ada di Membangun_model/mlflow_tracking_e
                                                  + 2 artefak tambahan (confusion_matrix_tuned.png,
                                                  optuna_optimization_history.png), model registry
                                                  rice-model hingga v16.
-- mlflow_tracking_evidence/OLD_screenshoot_*_was_dagshub.jpg -> arsip screenshot versi sebelumnya
-                                                 (revisi submission) yang keliru menampilkan hasil
-                                                 DagsHub untuk berkas modelling.py; disimpan sebagai
-                                                 jejak audit, SUDAH DIGANTI oleh screenshot lokal di atas.

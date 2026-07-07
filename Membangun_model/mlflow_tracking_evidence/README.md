@@ -42,3 +42,8 @@ terlihat jelas di pojok kiri atas setiap tangkapan layar sebagai bukti berjalan 
 - **Basic**: `modelling.py` — autolog, MLflow Tracking UI lokal → `local/mlflow_local_run_overview.jpg`, `mlflow_local_run_artifacts.jpg`
 - **Skilled**: `modelling_tuning.py` — hyperparameter tuning (Optuna, 40 trials) + manual logging, MLflow Tracking UI lokal → `local/mlflow_local_tuning_run_manual_logging.jpg`
 - **Advance**: `modelling_tuning.py` dijalankan dengan tracking online ke DagsHub, manual logging + 2 artefak tambahan (`confusion_matrix_tuned.png`, `optuna_optimization_history.png`) → `dagshub_online/mlflow_dagshub_tuning_run_artifacts.jpg`
+
+## File tambahan di `local/`
+
+- `screen_full_local_mlflow.png` — tangkapan layar full-screen dari browser sungguhan (address bar terlihat: `http://127.0.0.1:5000/...`) menunjukkan experiment `rice_classification` dengan run `rf_base` dari `modelling.py` versi terbaru (hardcoded local, tanpa ambiguitas).
+- `screen_full_local_run_detail.png` — detail run tsb.: Source `modelling.py`, tags `author: Muhammad-Yusuf`, `dataset: rice`, dibuat lokal.
