@@ -1,9 +1,10 @@
 """Training script (Kriteria 2 - Basic) — autolog + manual logging metrics.
 
-Tracking MLflow disimpan 100% LOKAL di komputer (folder ./mlruns di samping skrip ini).
-Skrip ini SENGAJA tidak memiliki logika kondisional ke server cloud manapun (DagsHub dsb.)
-agar tidak ambigu saat direview — sesuai ketentuan Kriteria 2 tingkat Basic.
-Tracking online (DagsHub) hanya dipakai pada modelling_tuning.py (tingkat Advance).
+Tracking MLflow disimpan 100% LOKAL di komputer ini (folder ./mlruns di samping skrip ini).
+Skrip ini TIDAK memuat environment-variable check, TIDAK memuat import konfigurasi
+eksternal apa pun, dan TIDAK memanggil layanan pihak ketiga/cloud mana pun. Baris
+`mlflow.set_tracking_uri(...)` di bawah selalu diarahkan ke path lokal yang sama,
+tanpa syarat, tanpa kondisi apa pun.
 """
 from __future__ import annotations
 
